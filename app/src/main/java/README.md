@@ -1,4 +1,4 @@
-# WearOS DSU Motion Source (WIP)
+# WearOS DSU Motion Source
 
 The project aims to reverse engineer **MotionSource** by sshnuke, which was developed to utilize the **Cemuhook protocol** for gyroscope and accelerometer values to be used with emulators such as **Cemu**.
 
@@ -6,7 +6,7 @@ This application runs a **CemuHook (DSU) server** on your **Wear OS device**, al
 
 ---
 
-## Desired Features
+## Features
 
 - **High-Fidelity Motion Control**  
   Utilizes your watch's fused `GAME_ROTATION_VECTOR` sensor for stable, low-latency motion tracking.

@@ -1,4 +1,4 @@
-package com.example.WearOSDSU; // Ensure this matches your package name
+package com.example.WearOSDSU;
 
 import android.util.Log;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class DsuServer {
     private void serverLoop() {
         try {
             socket = new DatagramSocket(PORT);
-            socket.setSoTimeout(1000); // Use a timeout to make the loop responsive
+            socket.setSoTimeout(1); // Use a timeout to make the loop responsive
             Log.i(TAG, "Socket created, listening on port " + PORT);
 
             byte[] receiveBuffer = new byte[128];
@@ -74,7 +74,13 @@ public class DsuServer {
                     Log.i(TAG, "Client timed out. Awaiting new connection.");
                     clientAddress = null;
                 }
-
+                if(clientAddress != null) {
+                    try {
+                        sendMotionData();
+                    } catch (IOException e) {
+                        Log.e(TAG, "IOException", e);
+                    }
+                }
                 DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
                 try {
                     socket.receive(receivePacket);
@@ -83,9 +89,9 @@ public class DsuServer {
                     lastClientMessageTime = System.currentTimeMillis();
                     handleRequest(receivePacket);
                 } catch (SocketTimeoutException e) {
-                    if (clientAddress != null) {
-                        sendMotionData();
-                    }
+//                    if (clientAddress != null) {
+//                        sendMotionData();
+                   // }
                 }
             }
         } catch (SocketException e) {
@@ -123,7 +129,7 @@ public class DsuServer {
             accel = Arrays.copyOf(currentAccel, currentAccel.length);
             gyro = Arrays.copyOf(currentGyro, currentGyro.length);
         }
-        byte[] dataPacket = DsuPacketBuilder.buildControllerDataPacket(accel, gyro);
+        byte[] dataPacket = DsuPacketBuilder.buildControllerDataPacket(gyro, accel);
         sendPacket(dataPacket);
     }
 

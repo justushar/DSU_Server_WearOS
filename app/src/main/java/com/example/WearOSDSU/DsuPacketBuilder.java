@@ -103,9 +103,7 @@ public class DsuPacketBuilder {
         // Motion Timestamp
         buffer.putLong(System.nanoTime());
 
-        // --- THIS IS THE CORRECTED SECTION ---
-        // Gyroscope data is sent as Pitch, Yaw, Roll
-        // Correct mapping: Android X -> Pitch, Android Z -> Yaw, Android Y -> Roll
+
         buffer.putFloat(gyro[0]); // Pitch (Rotation around X-axis)
         buffer.putFloat(gyro[2]); // Yaw (Rotation around Z-axis)
         buffer.putFloat(gyro[1]); // Roll (Rotation around Y-axis)
@@ -114,12 +112,11 @@ public class DsuPacketBuilder {
         buffer.putFloat(accel[0]); // X
         buffer.putFloat(accel[1]); // Y
         buffer.putFloat(accel[2]); // Z
-        // --- END OF CORRECTION ---
 
         // Calculate and insert CRC32
         byte[] packetBytes = buffer.array();
         CRC32 crc32 = new CRC32();
-        // Important: The CRC is calculated *before* the CRC field itself is written
+
         buffer.putInt(8, 0); // Zero out CRC field for calculation
         crc32.update(packetBytes);
         buffer.putInt(8, (int) crc32.getValue());

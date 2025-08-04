@@ -24,7 +24,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     private Sensor rotationSensor;
     private Sensor gyroSensor;
 
-    // State for processing
+
     private final float[] rotationMatrix = new float[9];
 
     private final float[] gyroData = new float[3];
@@ -43,10 +43,9 @@ public class MainActivity extends Activity implements SensorEventListener {
         dsuServer = new DsuServer();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        // We will use TWO sensors now, mimicking how MotionSource can use them together.
-        // 1. The Rotation Vector to get a stable "down" direction (for the accelerometer part)
+
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
-        // 2. The raw Gyroscope to get the rotation rate
+
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         if (rotationSensor == null || gyroSensor == null) {
@@ -80,6 +79,9 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
+
+    private static final float RADIANS_TO_DEGREES = (float) (180.0f / Math.PI);
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         // Update the data from whichever sensor fired the event
@@ -89,42 +91,39 @@ public class MainActivity extends Activity implements SensorEventListener {
             System.arraycopy(event.values, 0, gyroData, 0, 3);
         }
 
-        // --- FINAL Corrected Data Processing ---
 
-        // 1. Correctly calculate the Gravity vector. It's the third COLUMN of the
-        // rotation matrix (indices 2, 5, 8). We normalize it and multiply by G.
         float[] gravity = {
                 rotationMatrix[2] * SensorManager.GRAVITY_EARTH,
                 rotationMatrix[5] * SensorManager.GRAVITY_EARTH,
                 rotationMatrix[8] * SensorManager.GRAVITY_EARTH
         };
 
-        // 2. Apply the single, correct landscape transformation to the gravity vector.
-        // New(X, Y, Z) = Old(Y, -X, Z)
+
         float[] finalGravity = { gravity[1], -gravity[0], gravity[2] };
 
-        // 3. Apply the single, correct landscape transformation to the raw gyro data.
         float[] transformedGyro = { gyroData[1], -gyroData[0], gyroData[2] };
 
-        // 4. Remap the transformed Gyroscope axes to the DSU protocol's order.
-        // DSU wants: Pitch, Yaw, Roll
-        // Our transformed axes now correspond to:
-        // Pitch (rotation around new X axis) = transformedGyro[0]
-        // Yaw   (rotation around new Z axis) = transformedGyro[2]
-        // Roll  (rotation around new Y axis) = transformedGyro[1]
-        float[] dsuGyro = {
-                transformedGyro[0], // Pitch
-                transformedGyro[2], // Yaw
-                transformedGyro[1]  // Roll
+
+        float[] gyroInDegrees = {
+                transformedGyro[0] * RADIANS_TO_DEGREES,
+                transformedGyro[1] * RADIANS_TO_DEGREES,
+                transformedGyro[2] * RADIANS_TO_DEGREES
         };
 
-        // 5. Send the fully processed data to the server
+
+        float[] dsuGyro = {
+                gyroInDegrees[0], // Pitch (rotation around new X axis)
+                gyroInDegrees[2], // Yaw   (rotation around new Z axis)
+                gyroInDegrees[1]  // Roll  (rotation around new Y axis)
+        };
+
+
         if (dsuServer != null && dsuServer.isRunning()) {
+
             dsuServer.updateSensorData(finalGravity, dsuGyro);
         }
     }
 
-    // It's important to include the rest of the Activity lifecycle methods for stability.
     @Override
     protected void onPause() {
         super.onPause();
