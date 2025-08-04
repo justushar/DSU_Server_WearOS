@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/ipAddressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/streamToggle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:text="Initializing..."
+        android:textAlignment="center"
+        tools:text="IP: 192.168.1.100:26760" />
+
+    <ToggleButton
+        android:id="@+id/streamToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textOff="Start"
+        android:textOn="Stop" />
+
+    <TextView
+        android:id="@+id/sensorDataText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/streamToggle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:fontFamily="monospace"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        tools:text="Accel: 0.0, 9.8, 0.0\nGyro: 0.0, 0.0, 0.0" />
+
+</RelativeLayout>
