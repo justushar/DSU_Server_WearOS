@@ -22,8 +22,8 @@ public class DsuServer {
     private long lastClientMessageTime;
 
     private final Object sensorLock = new Object();
-    private float[] currentGyro = new float[3];
-    private float[] currentAccel = new float[3];
+    private final float[] currentGyro = new float[3];
+    private final float[] currentAccel = new float[3];
 
     public void start() {
         if (isRunning) return;

@@ -26,7 +26,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     // State for processing
     private final float[] rotationMatrix = new float[9];
-    private final float[] gravityData = new float[3];
+
     private final float[] gyroData = new float[3];
 
     @Override
