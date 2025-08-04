@@ -60,7 +60,8 @@ git clone https://github.com/justushar/DSU_Server_WearOS.git
 3. Build the project using Build > Make Project.
 
 4. The installable APK will be located in:
-```app/build/outputs/apk/debug/
+```bash
+app/build/outputs/apk/debug/
 ```
 
 ## License
