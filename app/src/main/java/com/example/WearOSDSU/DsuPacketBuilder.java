@@ -17,8 +17,8 @@ public class DsuPacketBuilder {
     private static final byte SLOT_STATE_NOT_CONNECTED = 0;
     private static final byte SLOT_STATE_CONNECTED = 2;
 
-    // Controller Models
-    private static final byte MODEL_FULL_GYRO = 0;
+    // Controller Models - Should be 2
+    private static final byte MODEL_FULL_GYRO = 2;
 
     // Controller Connection Types
     private static final byte CONNECTION_TYPE_BLUETOOTH = 2;
